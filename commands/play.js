@@ -6,6 +6,7 @@ const scdl = require("soundcloud-downloader").default;
 const https = require("https");
 const { YOUTUBE_API_KEY, SOUNDCLOUD_CLIENT_ID, DEFAULT_VOLUME } = require("../util/Util");
 const youtube = new YouTubeAPI(YOUTUBE_API_KEY);
+const { extraMessage } = require("../include/extra");
 
 module.exports = {
   name: "play",
@@ -134,8 +135,13 @@ module.exports = {
     message.client.queue.set(message.guild.id, queueConstruct);
 
     try {
+      justJoined = message.guild.me.voice.channel == null
+
       queueConstruct.connection = await channel.join();
       await queueConstruct.connection.voice.setSelfDeaf(true);
+
+      if (justJoined) { await extraMessage(queueConstruct,"join")}
+
       play(queueConstruct.songs[0], message);
     } catch (error) {
       console.error(error);

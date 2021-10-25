@@ -2,6 +2,7 @@ const ytdl = require("ytdl-core-discord");
 const scdl = require("soundcloud-downloader").default;
 const { canModifyQueue, STAY_TIME } = require("../util/Util");
 const i18n = require("../util/i18n");
+const { extraMessage } = require("../include/extra");
 
 module.exports = {
   async play(song, message) {
@@ -20,8 +21,11 @@ module.exports = {
     const queue = message.client.queue.get(message.guild.id);
 
     if (!song) {
-      setTimeout(function () {
+      setTimeout(async function () {
         if (queue.connection.dispatcher && message.guild.me.voice.channel) return;
+        
+        await extraMessage(queue,"leave")
+        
         queue.channel.leave();
         !PRUNING && queue.textChannel.send(i18n.__("play.leaveChannel"));
       }, STAY_TIME * 1000);
@@ -59,7 +63,7 @@ module.exports = {
 
     const dispatcher = queue.connection
       .play(stream, { type: streamType })
-      .on("finish", () => {
+      .on("finish", async () => {
         if (collector && !collector.ended) collector.stop();
 
         queue.connection.removeAllListeners("disconnect");
@@ -72,6 +76,10 @@ module.exports = {
           module.exports.play(queue.songs[0], message);
         } else {
           // Recursively play the next song
+
+          await extraMessage(queue,"skip");
+          //console.log(queue.songs);
+          
           queue.songs.shift();
           module.exports.play(queue.songs[0], message);
         }
