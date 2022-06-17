@@ -65,4 +65,4 @@ typings/
 
 # Temp ignore 
 config.json
-config.docker-env.txt
+config.docker-env.env

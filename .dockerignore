@@ -11,3 +11,5 @@ config.docker-env.txt
 CODE_OF_CONDUCT.md
 CONTRIBUTING.md
 Procfile
+sounds
+sounds_bot

@@ -1,5 +1,5 @@
-import { Dirent, readdirSync, mkdirSync } from "fs";
-import {AudioResource, createAudioResource } from "@discordjs/voice";
+import { readdirSync, mkdirSync } from "fs";
+import { AudioResource, createAudioResource } from "@discordjs/voice";
 
 export const enum BotSound{
 	Join = "sounds_bot/join" ,
