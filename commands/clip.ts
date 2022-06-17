@@ -1,11 +1,7 @@
 import { DiscordGatewayAdapterCreator, getVoiceConnection, joinVoiceChannel, createAudioPlayer, AudioPlayerState, AudioPlayerStatus, createAudioResource, NoSubscriberBehavior } from "@discordjs/voice";
 import { Message, SystemChannelFlags } from "discord.js";
 import { bot } from "../index";
-import { MusicQueue } from "../structs/MusicQueue";
-import { Song } from "../structs/Song";
 import { i18n } from "../utils/i18n";
-import { playlistPattern } from "../utils/patterns";
-import { canModifyQueue } from "../utils/queue";
 import { BotSound, randomSoundResourceFrom } from "../utils/botSound";
 
 export default {
