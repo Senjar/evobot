@@ -1,4 +1,4 @@
-import { DiscordGatewayAdapterCreator, getVoiceConnection, joinVoiceChannel, createAudioPlayer, AudioPlayerState, AudioPlayerStatus, createAudioResource, NoSubscriberBehavior } from "@discordjs/voice";
+import { DiscordGatewayAdapterCreator, getVoiceConnection, joinVoiceChannel, createAudioPlayer, AudioPlayerState, AudioPlayerStatus, createAudioResource, NoSubscriberBehavior, VoiceConnection } from "@discordjs/voice";
 import { Message, SystemChannelFlags } from "discord.js";
 import { bot } from "../index";
 import { i18n } from "../utils/i18n";
@@ -10,7 +10,7 @@ export default {
     aliases: ["c"],
     description: i18n.__("play.description"),
     permissions: ["CONNECT", "SPEAK", "ADD_REACTIONS", "MANAGE_MESSAGES"],
-    async execute(message: Message, args: string[], soundType: BotSound) {
+    async execute(message: Message, args: string[], soundType: BotSound, connection: VoiceConnection) {
         const queue = bot.queues.get(message.guild!.id);
 
         const { channel } = message.member!.voice;
@@ -63,9 +63,14 @@ export default {
                                     //console.log("[CL] unpause 2")
                                 });
                             }
-                        }
+                        } 
                     }
                 }); 
+            }else if (soundType == BotSound.Leave){
+                console.log("destroy")
+                clipPlayer.once(AudioPlayerStatus.Idle, async (oldState: AudioPlayerState, newState: AudioPlayerState) => {
+                    connection.destroy();
+                });
             }
 
             //Play clip

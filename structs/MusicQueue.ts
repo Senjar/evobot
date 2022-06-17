@@ -15,6 +15,7 @@ import { Message, TextChannel, User } from "discord.js";
 import { promisify } from "node:util";
 import { bot } from "../index";
 import { QueueOptions } from "../interfaces/QueueOptions";
+import { BotSound } from "../utils/botSound";
 import { config } from "../utils/config";
 import { i18n } from "../utils/i18n";
 import { canModifyQueue } from "../utils/queue";
@@ -131,7 +132,10 @@ export class MusicQueue {
       )
         return;
 
-      this.connection.destroy();
+      if (config.BOT_SOUNDS) bot.commands.get("clip")!.execute(this.message,null,BotSound.Leave,this.connection);
+      else this.connection.destroy();
+
+
 
       !config.PRUNING && this.textChannel.send(i18n.__("play.leaveChannel"));
     }, config.STAY_TIME*1000);
