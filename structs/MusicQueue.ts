@@ -163,14 +163,15 @@ export class MusicQueue {
     try {
       playingMessage = await this.textChannel.send((newState.resource as AudioResource<Song>).metadata.startMessage());
 
-      await playingMessage.react("⏭");
       await playingMessage.react("⏯");
+      await playingMessage.react("⏹");
+      await playingMessage.react("⏭");
       await playingMessage.react("🔇");
       await playingMessage.react("🔉");
       await playingMessage.react("🔊");
       await playingMessage.react("🔁");
       await playingMessage.react("🔀");
-      await playingMessage.react("⏹");
+      
     } catch (error: any) {
       console.error(error);
       this.textChannel.send(error.message);

@@ -1,10 +1,12 @@
-import { DiscordGatewayAdapterCreator, joinVoiceChannel } from "@discordjs/voice";
+import { DiscordGatewayAdapterCreator, getVoiceConnection, joinVoiceChannel } from "@discordjs/voice";
 import { Message } from "discord.js";
 import { bot } from "../index";
 import { MusicQueue } from "../structs/MusicQueue";
 import { Song } from "../structs/Song";
 import { i18n } from "../utils/i18n";
 import { playlistPattern } from "../utils/patterns";
+import { BotSound } from "../utils/botSound";
+import { config } from "../utils/config";
 
 export default {
   name: "play",
@@ -55,6 +57,9 @@ export default {
         .catch(console.error);
     }
 
+    //Check if already in channel
+    const newJoinedChannel = getVoiceConnection(channel.guild.id) == undefined
+
     const newQueue = new MusicQueue({
       message,
       connection: joinVoiceChannel({
@@ -67,5 +72,8 @@ export default {
     bot.queues.set(message.guild!.id, newQueue);
 
     newQueue.enqueue(song);
+
+    if (config.BOT_SOUNDS && newJoinedChannel) bot.commands.get("clip")!.execute(message,null,BotSound.Join);
+
   }
 };

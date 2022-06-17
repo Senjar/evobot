@@ -15,7 +15,7 @@ export default {
         clips.push(file.substring(0, file.length - 4));
       });
 
-      message.reply(`${clips.join(" ")}`).catch(console.error);
+      message.reply(`**/clip [clip]**\n \`Με μερικό ταίριασμα διαλέγει ενα τυχαίο που ταιριάζει. Δεν υπάρχει διάκριση πεζών - κεφαλαίων\`\n\`\`\`${clips.join("  ")}\`\`\``).catch(console.error);
     });
   }
 };

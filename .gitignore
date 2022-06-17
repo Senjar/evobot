@@ -3,6 +3,7 @@ config.json
 /.idea
 /.vscode
 /sounds/**
+/sounds_bot/**
 !/sounds/putmusichere.mp3
 /dist
 
@@ -64,3 +65,4 @@ typings/
 
 # Temp ignore 
 config.json
+config.docker-env.txt
