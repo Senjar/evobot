@@ -124,9 +124,10 @@ export class MusicQueue {
     !config.PRUNING && this.textChannel.send(i18n.__("play.queueEnded")).catch(console.error);
 
     setTimeout(() => {
-      if (
-        bot.queues.get(this.message.guild!.id)?.player.state.status !== AudioPlayerStatus.Idle ||
-        this.connection.state.status === VoiceConnectionStatus.Destroyed
+      const playerStatus = bot.queues.get(this.message.guild!.id)?.player.state.status
+      if (playerStatus !== undefined &&
+        (playerStatus !== AudioPlayerStatus.Idle ||
+        this.connection.state.status === VoiceConnectionStatus.Destroyed)
       )
         return;
 
