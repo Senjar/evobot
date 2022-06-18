@@ -17,7 +17,7 @@ export function randomSoundResourceFrom (soundType: BotSound, args: string[]): A
     var fileList = readdirSync(soundType)
 
     var selected
-    if (args.length == 0){
+    if (!args || !args.length){
         //Random from folder
         selected = Math.floor(Math.random() * fileList.length);
         console.log("->",fileList[selected])
