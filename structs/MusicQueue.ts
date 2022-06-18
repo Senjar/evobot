@@ -116,6 +116,7 @@ export class MusicQueue {
   }
 
   public stop() {
+    console.log("stop")
     this.queueLock = true;
     this.loop = false;
     this.songs = [];
@@ -132,8 +133,14 @@ export class MusicQueue {
       )
         return;
 
-      if (config.BOT_SOUNDS) bot.commands.get("clip")!.execute(this.message,null,BotSound.Leave,this.connection);
-      else this.connection.destroy();
+      if (config.BOT_SOUNDS) {
+        console.log("stop 1")
+        bot.commands.get("clip")!.execute(this.message,null,BotSound.Leave,this.connection);
+      }
+      else {
+        console.log("stop 2")
+        this.connection.destroy();
+      }
 
 
 

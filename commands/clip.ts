@@ -13,6 +13,17 @@ export default {
     async execute(message: Message, args: string[], soundType: BotSound, connection: VoiceConnection) {
         const queue = bot.queues.get(message.guild!.id);
 
+        if (soundType === BotSound.Leave){
+            const clipPlayer = createAudioPlayer({ behaviors: { noSubscriber: NoSubscriberBehavior.Play } });
+            connection.subscribe(clipPlayer)
+            console.log("destroy")
+            clipPlayer.once(AudioPlayerStatus.Idle, async (oldState: AudioPlayerState, newState: AudioPlayerState) => {
+                connection.destroy();
+            });
+            clipPlayer.play(randomSoundResourceFrom(soundType,args));
+            return
+        }
+
         const { channel } = message.member!.voice;
         if (!channel) return message.reply(i18n.__("play.errorNotChannel")).catch(console.error);
 
@@ -66,11 +77,6 @@ export default {
                         } 
                     }
                 }); 
-            }else if (soundType == BotSound.Leave){
-                console.log("destroy")
-                clipPlayer.once(AudioPlayerStatus.Idle, async (oldState: AudioPlayerState, newState: AudioPlayerState) => {
-                    connection.destroy();
-                });
             }
 
             //Play clip
