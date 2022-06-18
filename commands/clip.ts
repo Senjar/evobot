@@ -8,7 +8,7 @@ export default {
     name: "clip",
     cooldown: 3,
     aliases: ["c"],
-    description: i18n.__("play.description"),
+    description: i18n.__("clip.description"),
     permissions: ["CONNECT", "SPEAK", "ADD_REACTIONS", "MANAGE_MESSAGES"],
     async execute(message: Message, args: string[], soundType: BotSound = BotSound.Clip, connection: VoiceConnection) {
         const queue = bot.queues.get(message.guild!.id);
