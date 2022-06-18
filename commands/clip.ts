@@ -10,7 +10,7 @@ export default {
     aliases: ["c"],
     description: i18n.__("play.description"),
     permissions: ["CONNECT", "SPEAK", "ADD_REACTIONS", "MANAGE_MESSAGES"],
-    async execute(message: Message, args: string[], soundType: BotSound, connection: VoiceConnection) {
+    async execute(message: Message, args: string[], soundType: BotSound = BotSound.Clip, connection: VoiceConnection) {
         const queue = bot.queues.get(message.guild!.id);
 
         if (soundType === BotSound.Leave){

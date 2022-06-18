@@ -17,7 +17,7 @@ export function randomSoundResourceFrom (soundType: BotSound, args: string[]): A
     var fileList = readdirSync(soundType)
 
     var selected
-    if (args == null){
+    if (args.length == 0){
         //Random from folder
         selected = Math.floor(Math.random() * fileList.length);
         console.log("->",fileList[selected])
@@ -29,7 +29,7 @@ export function randomSoundResourceFrom (soundType: BotSound, args: string[]): A
             if (file.toLocaleLowerCase().includes(args[0].toLocaleLowerCase())){
                 clipList.push(file)
             }
-            console.log(file);
+            //console.log(file);
         });
         if (clipList.length == 0){
             //Nothing matching found
