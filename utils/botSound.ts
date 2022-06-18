@@ -8,7 +8,7 @@ export const enum BotSound{
 	Clip = "sounds"  
 }
 
-export function randomSoundResourceFrom (soundType: BotSound, args: string[] = []): AudioResource {
+export function randomSoundResourceFrom (soundType: BotSound, args: string[]): AudioResource {
 
 
     //Check if folder exists
