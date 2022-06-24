@@ -20,7 +20,7 @@ export function randomSoundResourceFrom (soundType: BotSound, args: string[]): A
     if (!args || !args.length){
         //Random from folder
         selected = Math.floor(Math.random() * fileList.length);
-        console.log("->",fileList[selected])
+        console.log(soundType," Random ->",fileList[selected])
         return createAudioResource(soundType+'/'+fileList[selected])
     }else{
         //Search for clips using args
@@ -35,12 +35,12 @@ export function randomSoundResourceFrom (soundType: BotSound, args: string[]): A
             //Nothing matching found
             //Random from folder
             selected = Math.floor(Math.random() * fileList.length);
-            console.log("->",fileList[selected]," [clip not found]")
+            console.log(args," Random ->",fileList[selected]," [clip not found]")
             return createAudioResource(soundType+'/'+fileList[selected])
         }else{
             //Random from matched results
             selected = Math.floor(Math.random() * clipList.length);
-            console.log("->",clipList[selected])
+            console.log(args," ->",clipList[selected])
             return createAudioResource(soundType+'/'+clipList[selected])
         }
      
