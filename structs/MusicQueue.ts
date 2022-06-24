@@ -9,7 +9,8 @@ import {
   VoiceConnection,
   VoiceConnectionDisconnectReason,
   VoiceConnectionState,
-  VoiceConnectionStatus
+  VoiceConnectionStatus,
+  getVoiceConnection
 } from "@discordjs/voice";
 import { Message, TextChannel, User } from "discord.js";
 import { promisify } from "node:util";
@@ -58,8 +59,9 @@ export class MusicQueue {
             this.connection.destroy();
             this.stop();
           } catch (error: any) {
-            console.log(error)
-            this.connection.destroy();
+            //console.log(error)
+            const channel  = this.message?.guild?.me?.voice.channel
+            if (channel) getVoiceConnection(channel.guild.id)?.disconnect();
           }
 
         } else if (this.connection.rejoinAttempts < 5) {

@@ -19,7 +19,14 @@ export default {
             connection.subscribe(clipPlayer)
             console.log("destroy")
             clipPlayer.once(AudioPlayerStatus.Idle, async (oldState: AudioPlayerState, newState: AudioPlayerState) => {
-                connection.destroy();
+                try {
+                    connection.destroy();
+                } catch (error: any) {
+                    //console.log(error)
+                    const channel  = message?.guild?.me?.voice.channel
+                    if (channel) getVoiceConnection(channel.guild.id)?.disconnect();
+                }
+                
             });
             clipPlayer.play(randomSoundResourceFrom(soundType,args));
             return
@@ -43,8 +50,9 @@ export default {
                         try {
                             voiceCon2.destroy();
                         } catch (error: any) {
-                            console.log(error)
-                            voiceCon2.destroy();
+                            //console.log(error)
+                            const channel  = message?.guild?.me?.voice.channel
+                            if (channel) getVoiceConnection(channel.guild.id)?.disconnect();
                         }
                     }
                 }
