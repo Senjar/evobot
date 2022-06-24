@@ -22,7 +22,7 @@ export default {
                 try {
                     connection.destroy();
                 } catch (error: any) {
-                    console.log(error)
+                    //console.log(error)
                     const channel  = message?.guild?.me?.voice.channel
                     if (channel) getVoiceConnection(channel.guild.id)?.disconnect();
                 }
