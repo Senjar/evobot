@@ -17,12 +17,12 @@ export default {
         if (soundType === BotSound.Leave){
             const clipPlayer = createAudioPlayer({ behaviors: { noSubscriber: NoSubscriberBehavior.Play } });
             connection.subscribe(clipPlayer)
-            console.log("destroy")
+            //console.log("destroy")
             clipPlayer.once(AudioPlayerStatus.Idle, async (oldState: AudioPlayerState, newState: AudioPlayerState) => {
                 try {
                     connection.destroy();
                 } catch (error: any) {
-                    //console.log(error)
+                    console.log(error)
                     const channel  = message?.guild?.me?.voice.channel
                     if (channel) getVoiceConnection(channel.guild.id)?.disconnect();
                 }
@@ -44,19 +44,20 @@ export default {
             channelId: channel.id,
             guildId: channel.guild.id,
             adapterCreator: channel.guild.voiceAdapterCreator as DiscordGatewayAdapterCreator
-            }).on("stateChange" as any, async (oldState: VoiceConnectionState, newState: VoiceConnectionState) => {
-                if (newState.status === VoiceConnectionStatus.Disconnected) {
-                    if (newState.reason === VoiceConnectionDisconnectReason.WebSocketClose && newState.closeCode === 4014) {
-                        try {
-                            voiceCon2.destroy();
-                        } catch (error: any) {
-                            //console.log(error)
-                            const channel  = message?.guild?.me?.voice.channel
-                            if (channel) getVoiceConnection(channel.guild.id)?.disconnect();
-                        }
+        }).on("stateChange" as any, async (oldState: VoiceConnectionState, newState: VoiceConnectionState) => {
+            if (newState.status === VoiceConnectionStatus.Disconnected) {
+                if ((newState.reason === VoiceConnectionDisconnectReason.WebSocketClose && newState.closeCode === 4014)
+                    || newState.reason === VoiceConnectionDisconnectReason.Manual) {
+                    try {
+                        voiceCon2.destroy();
+                    } catch (error: any) {
+                        //console.log(error)
+                        const channel  = message?.guild?.me?.voice.channel
+                        if (channel) getVoiceConnection(channel.guild.id)?.disconnect();
                     }
                 }
-            });
+            }
+        });
 
         if (!voiceCon2){
           console.log("Could not join channel");

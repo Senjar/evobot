@@ -48,7 +48,8 @@ export class MusicQueue {
 
     this.connection.on("stateChange" as any, async (oldState: VoiceConnectionState, newState: VoiceConnectionState) => {
       if (newState.status === VoiceConnectionStatus.Disconnected) {
-        if (newState.reason === VoiceConnectionDisconnectReason.WebSocketClose && newState.closeCode === 4014) {
+        if ((newState.reason === VoiceConnectionDisconnectReason.WebSocketClose && newState.closeCode === 4014)
+          || newState.reason === VoiceConnectionDisconnectReason.Manual) {
           /* try {
             await entersState(this.connection, VoiceConnectionStatus.Connecting, 5_000);
           } catch {
@@ -56,8 +57,8 @@ export class MusicQueue {
           } */
 
           try {
+            this.stop(true);
             this.connection.destroy();
-            this.stop();
           } catch (error: any) {
             //console.log(error)
             const channel  = this.message?.guild?.me?.voice.channel
@@ -117,8 +118,8 @@ export class MusicQueue {
     this.processQueue();
   }
 
-  public stop() {
-    console.log("stop")
+  public stop(instant=false) {
+    //console.log("stop instant(%b)",instant)
     this.queueLock = true;
     this.loop = false;
     this.songs = [];
@@ -127,6 +128,10 @@ export class MusicQueue {
 
     !config.PRUNING && this.textChannel.send(i18n.__("play.queueEnded")).catch(console.error);
 
+    if(instant){
+      !config.PRUNING && this.textChannel.send(i18n.__("play.leaveChannel"));
+      return;
+    }
     setTimeout(() => {
       const playerStatus = bot.queues.get(this.message.guild!.id)?.player.state.status
       if (playerStatus !== undefined &&
@@ -136,12 +141,18 @@ export class MusicQueue {
         return;
 
       if (config.BOT_SOUNDS) {
-        console.log("stop 1")
+        //console.log("stop 1")
         bot.commands.get("clip")!.execute(this.message,null,BotSound.Leave,this.connection);
       }
       else {
-        console.log("stop 2")
-        this.connection.destroy();
+        //console.log("stop 2")
+        try {
+          this.connection.destroy();
+        } catch (error: any) {
+          //console.log(error)
+          const channel  = this.message?.guild?.me?.voice.channel
+          if (channel) getVoiceConnection(channel.guild.id)?.disconnect();
+        }
       }
 
 
