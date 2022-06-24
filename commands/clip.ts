@@ -1,4 +1,5 @@
-import { DiscordGatewayAdapterCreator, getVoiceConnection, joinVoiceChannel, createAudioPlayer, AudioPlayerState, AudioPlayerStatus, createAudioResource, NoSubscriberBehavior, VoiceConnection } from "@discordjs/voice";
+import { DiscordGatewayAdapterCreator, getVoiceConnection, joinVoiceChannel, createAudioPlayer, AudioPlayerState, AudioPlayerStatus, NoSubscriberBehavior, VoiceConnection, VoiceConnectionState, VoiceConnectionStatus, VoiceConnectionDisconnectReason
+} from "@discordjs/voice";
 import { Message, SystemChannelFlags } from "discord.js";
 import { bot } from "../index";
 import { i18n } from "../utils/i18n";
@@ -28,11 +29,27 @@ export default {
         if (!channel) return message.reply(i18n.__("play.errorNotChannel")).catch(console.error);
 
         const clipPlayer = createAudioPlayer({ behaviors: { noSubscriber: NoSubscriberBehavior.Play } });
+        const voiceCon = getVoiceConnection(channel.guild.id)
+        if (voiceCon && channel.id !== voiceCon.joinConfig.channelId){
+            voiceCon.destroy();
+        }
         const voiceCon2 = getVoiceConnection(channel.guild.id) ?? joinVoiceChannel({
             channelId: channel.id,
             guildId: channel.guild.id,
             adapterCreator: channel.guild.voiceAdapterCreator as DiscordGatewayAdapterCreator
-          })
+            }).on("stateChange" as any, async (oldState: VoiceConnectionState, newState: VoiceConnectionState) => {
+                if (newState.status === VoiceConnectionStatus.Disconnected) {
+                    if (newState.reason === VoiceConnectionDisconnectReason.WebSocketClose && newState.closeCode === 4014) {
+                        try {
+                            voiceCon2.destroy();
+                        } catch (error: any) {
+                            console.log(error)
+                            voiceCon2.destroy();
+                        }
+                    }
+                }
+            });
+
         if (!voiceCon2){
           console.log("Could not join channel");
 
